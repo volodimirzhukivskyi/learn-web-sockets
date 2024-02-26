@@ -25,7 +25,8 @@ function onConnect(ws) {
     let name = strMessage.match(/([\p{Alpha}\p{M}\p{Nd}\p{Pc}\p{Join_C}]+)$/gu) || 'Гость';
     ws.send(`Привет с сервера, ${name}!`);
 
-    setTimeout(() => ws.close(1000, 'Пока!'), 5000);
+    // setTimeout(() => ws.close(1000, 'Пока!'), 5000);
+    //Закриття сервера через певний проміжок часу! 
   });
 }
 

@@ -1,35 +1,34 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from 'react';
+import './App.css';
+import Button from './components/Button/Button';
+import Title from './components/Title/Title';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [ws, setWs] = useState(null);
+  const [error, setEror] = useState(null);
+  const [btnName, setBtnName] = useState('Test Button');
+  useEffect(() => {
+    connection();
+  }, []);
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+  function connection() {
+    const ws = new WebSocket('ws://localhost:8080/');
+    ws.onopen = () => {
+      console.log('Connection Established!');
+      setWs(ws);
+    };
+    ws.onmessage = (e) => {
+      setBtnName(e.data);
+    };
+    ws.onerror = () => {
+      setEror('Error, try again later! ');
+    };
+  }
+  const handleClick = () => {
+    const name = prompt('set new button name');
+    ws.send(name);
+  };
+  return <>{error ? <Title title={error} /> : <Button click={handleClick}>{btnName}</Button>}</>;
 }
 
-export default App
+export default App;
